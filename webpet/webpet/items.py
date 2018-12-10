@@ -13,6 +13,7 @@ class WebpetItem(scrapy.Item):
     name = scrapy.Field()
     belongto = scrapy.Field()
     updatetime = scrapy.Field()
+    # originName = scrapy.Field()
     # addr = scrapy.Field()
     # name = scrapy.Field()
     # pass

@@ -16,7 +16,7 @@ class WebpetPipeline(object):
     def open_spider(self, spider):
         self.wb = Workbook()
         self.ws = self.wb.active
-        self.ws.append(['最新美剧','小分类','更新时间'])  # 设置表头
+        self.ws.append(['公司名称','工资','职位'])  # 设置表头
 
 
     def process_item(self, item, spider):
