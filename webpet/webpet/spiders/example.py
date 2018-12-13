@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 import io
 import sys
+
+from scrapy import Request
+from selenium import webdriver
+
 from urllib import request
 
 import scrapy
+from idna import unicode
+import time
 
 from webpet.items import WebpetItem
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='gb18030')
@@ -11,15 +17,27 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='gb18030')
 class ExampleSpider(scrapy.Spider):
     name = 'example'
     allowed_domains = ["baidu.com"]
-    # start_urls = ['https://sou.zhaopin.com/?jl=530&sf=25001&st=35000&kw=%E5%89%8D%E7%AB%AF&kt=3']
-    start_urls = ['https://sou.zhaopin.com']
+    start_urls = ['https://sou.zhaopin.com/?jl=530&sf=25001&st=35000&kw=%E5%89%8D%E7%AB%AF&kt=3']
+    # start_urls = ['https://sou.zhaopin.com']
+
+
+
+
+
+    def start_requests(self):
+        start_urls = ['https://sou.zhaopin.com/?jl=530&sf=25001&st=35000&kw=%E5%89%8D%E7%AB%AF&kt=3']
+        for url in start_urls:
+            yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        print(response.text)
+        # time.sleep(10)
+        # with open("my_meiju.html", 'a') as fp:
+        #     fp.write(unicode(response.text, "gb18030"))
+        # print(type(response.text))
         movies = response.xpath('//div[@class="contentpile__content__wrapper clearfix"]')
-        # print(len(movies))
+        print(len(movies))
         for each_movie in movies:
-            # print(each_movie)
+            print(each_movie)
             item = WebpetItem()
             item['name'] = each_movie.xpath('.//a[contains(@class,"company_title")]/@title').extract()[0]
             item['belongto'] = each_movie.xpath('.//p[@class="contentpile__content__wrapper__item__info__box__job__saray"]/text()').extract()[0]

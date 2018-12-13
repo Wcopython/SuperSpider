@@ -4,14 +4,17 @@
 #
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import time
 
 from scrapy import signals
-
+from scrapy.http import HtmlResponse
+from selenium import webdriver
 
 class WebpetSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.
+
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -49,6 +52,7 @@ class WebpetSpiderMiddleware(object):
         # that it doesn’t have a response associated.
 
         # Must return only requests (not items).
+
         for r in start_requests:
             yield r
 
@@ -60,6 +64,14 @@ class WebpetDownloaderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
+    def __init__(self):
+        self.browser = webdriver.Chrome()
+        self.browser.set_page_load_timeout(30)
+
+    def process_request(self, request, spider):
+        self.browser.get(request.url)
+        time.sleep(20)
+        return HtmlResponse(url=self.browser.current_url, body=self.browser.page_source, request=request)
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -68,7 +80,7 @@ class WebpetDownloaderMiddleware(object):
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         return s
 
-    def process_request(self, request, spider):
+    # def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.
 
@@ -78,7 +90,7 @@ class WebpetDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        # return None
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
