@@ -16,28 +16,32 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='gb18030')
 
 class ExampleSpider(scrapy.Spider):
     name = 'example'
-    allowed_domains = ["baidu.com"]
+    page = "1"
+    allowed_domains = ["zhaopin.com"]
     start_urls = ['https://sou.zhaopin.com/?jl=530&sf=25001&st=35000&kw=%E5%89%8D%E7%AB%AF&kt=3']
     # start_urls = ['https://sou.zhaopin.com']
 
+    def __init__(self):
+        # 在初始化淘宝对象时，创建driver
+        super(ExampleSpider, self).__init__(name='example')
+
+        self.driver = webdriver.Chrome()
 
 
-
-
-    def start_requests(self):
-        start_urls = ['https://sou.zhaopin.com/?jl=530&sf=25001&st=35000&kw=%E5%89%8D%E7%AB%AF&kt=3']
-        for url in start_urls:
-            yield Request(url=url, callback=self.parse)
+    # def start_requests(self):
+    #     start_urls = ['https://sou.zhaopin.com/?jl=530&sf=25001&st=35000&kw=%E5%89%8D%E7%AB%AF&kt=3']
+    #     for url in start_urls:
+    #         yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
+        self.page = int(self.page)+1
         # time.sleep(10)
         # with open("my_meiju.html", 'a') as fp:
         #     fp.write(unicode(response.text, "gb18030"))
         # print(type(response.text))
         movies = response.xpath('//div[@class="contentpile__content__wrapper clearfix"]')
-        print(len(movies))
         for each_movie in movies:
-            print(each_movie)
+            # print(each_movie)
             item = WebpetItem()
             item['name'] = each_movie.xpath('.//a[contains(@class,"company_title")]/@title').extract()[0]
             item['belongto'] = each_movie.xpath('.//p[@class="contentpile__content__wrapper__item__info__box__job__saray"]/text()').extract()[0]
@@ -54,6 +58,7 @@ class ExampleSpider(scrapy.Spider):
         # last_page = self.getvalue(last_page)
         # if last_page != 'noactive':
         #     yield scrapy.Request(url=next_url, callback=self.parse)
+        yield scrapy.Request(url='https://sou.zhaopin.com/?p='+str(self.page)+'&jl=530&sf=25001&st=35000&kw=%E5%89%8D%E7%AB%AF&kt=3', callback=self.parse)
 
     def parse_detail(self, response):
         # print('~~~~~~~~~~~detail~~~~~~~~~~~~`')

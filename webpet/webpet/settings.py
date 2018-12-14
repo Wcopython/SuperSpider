@@ -48,15 +48,15 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {
-   'webpet.middlewares.WebpetSpiderMiddleware': 543,
-}
+# SPIDER_MIDDLEWARES = {
+#    'webpet.middlewares.MyDownloaderMiddleware': 543,
+# }
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'webpet.middlewares.WebpetDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   'webpet.middlewares.MyDownloaderMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
